@@ -66,23 +66,27 @@ class result_dict(object):
 def readlog(filename):
     f = open(filename,'r')
     processd_dict = {}
-    for line in f.readlines():
-    
-        list_line = list(line.split("\n")[0].split(" "))
-        lf = LogFields(list_line)  
-	if processd_dict.has_key(lf.http_request):
-	    result_obj = processd_dict[lf.http_request]
-            result_obj.Occurrence += 1
-	    Min , Max = result_obj.Min, result_obj.Max
-       	    if int(lf.tq_info.Tt) > Max:
-		result_obj.Max = int(lf.tq_info.Tt)
-       	    elif int(lf.tq_info.Tt) < Min:
-		result_obj.Min = int(lf.tq_info.Tt)
-            result_obj.all_value.append(int(lf.tq_info.Tt))
-             
-	else:
-	   processd_dict[lf.http_request] = result_dict(1, int(lf.tq_info.Tt))
-
+    x = f.xreadlines()
+    while True:
+        try:
+        	line = x.next() 
+	        list_line = list(line.split("\n")[0].split(" "))
+	        lf = LogFields(list_line)  
+		if processd_dict.has_key(lf.http_request):
+		    result_obj = processd_dict[lf.http_request]
+	            result_obj.Occurrence += 1
+		    Min , Max = result_obj.Min, result_obj.Max
+	       	    if int(lf.tq_info.Tt) > Max:
+			result_obj.Max = int(lf.tq_info.Tt)
+	       	    elif int(lf.tq_info.Tt) < Min:
+			result_obj.Min = int(lf.tq_info.Tt)
+	            result_obj.all_value.append(int(lf.tq_info.Tt))
+	             
+		else:
+		   processd_dict[lf.http_request] = result_dict(1, int(lf.tq_info.Tt))
+		
+	except:
+		break
     for k, v in processd_dict.iteritems():
 	Occurrence = v.Occurrence
 	Min = v.Min
